@@ -239,10 +239,188 @@
           "refId": "A"
         }
       ]
+    },
+    {
+      "title": "CC OTEL Correlation: Account Utilization × Active Hosts",
+      "description": "Joins usage exporter metrics with Claude Code OTEL resource metrics via org_id = organization_id. Shows which CC hosts are consuming each account's quota — identify which host needs its session key rotated when utilization is high.",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 20 },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Value #session_util" },
+            "properties": [
+              { "id": "displayName", "value": "Session %" },
+              { "id": "unit", "value": "percent" },
+              { "id": "thresholds", "value": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 60 },
+                  { "color": "red", "value": 80 }
+                ]
+              }},
+              { "id": "custom.displayMode", "value": "color-background" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Value #weekly_util" },
+            "properties": [
+              { "id": "displayName", "value": "Weekly %" },
+              { "id": "unit", "value": "percent" },
+              { "id": "thresholds", "value": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 60 },
+                  { "color": "red", "value": 80 }
+                ]
+              }},
+              { "id": "custom.displayMode", "value": "color-background" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Value #cc_hosts" },
+            "properties": [
+              { "id": "displayName", "value": "Host Count" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Time" },
+            "properties": [
+              { "id": "custom.hidden", "value": true }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "__name__" },
+            "properties": [
+              { "id": "custom.hidden", "value": true }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "instance" },
+            "properties": [
+              { "id": "custom.hidden", "value": true }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "job" },
+            "properties": [
+              { "id": "custom.hidden", "value": true }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Session %", "desc": true }]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "expr": "claude_usage_session_utilization",
+          "legendFormat": "",
+          "refId": "session_util",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "claude_usage_weekly_utilization",
+          "legendFormat": "",
+          "refId": "weekly_util",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "count by (org_id, host_name) (label_replace(cc_otel_resource_info, \"org_id\", \"$1\", \"organization_id\", \"(.+)\"))",
+          "legendFormat": "",
+          "refId": "cc_hosts",
+          "format": "table",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "title": "Session Utilization by Org",
+      "description": "Session utilization keyed by org_id — the join key for correlating with Claude Code OTEL organization_id. Identify which accounts are running hot.",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 30 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_session_utilization",
+          "legendFormat": "{{account}} (org: {{org_id}})",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "title": "Weekly Utilization by Org",
+      "description": "Weekly utilization keyed by org_id — correlate with Claude Code OTEL organization_id to see which accounts are approaching weekly limits.",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 30 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_weekly_utilization",
+          "legendFormat": "{{account}} (org: {{org_id}})",
+          "refId": "A",
+          "instant": true
+        }
+      ]
     }
   ],
   "schemaVersion": 39,
-  "tags": ["claude"],
+  "tags": ["claude", "otel"],
   "templating": { "list": [] },
   "time": { "from": "now-6h", "to": "now" },
   "title": "Claude Usage",
