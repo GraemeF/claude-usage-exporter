@@ -112,7 +112,10 @@ func (p *accountPoller) run() {
 
 func (p *accountPoller) doPoll() {
 	ctx := context.Background()
-	attrs := metric.WithAttributes(attribute.String("account", p.acc.Name))
+	attrs := metric.WithAttributes(
+		attribute.String("account", p.acc.Name),
+		attribute.String("org_id", p.acc.OrgID),
+	)
 
 	usage, err := fetchUsage(p.acc)
 	if err != nil {

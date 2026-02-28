@@ -1,0 +1,291 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Session Utilization by Account",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_session_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"}",
+          "legendFormat": "{{account}} ({{org_id}})",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Weekly Utilization by Account",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_weekly_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"}",
+          "legendFormat": "{{account}} ({{org_id}})",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Poll Errors",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "rate(claude_usage_poll_errors_total{account=~\"$account\", org_id=~\"$org_id\"}[5m])",
+          "legendFormat": "{{account}} errors/s",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Poll Interval (Adaptive)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom" },
+        "tooltip": { "mode": "multi" }
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_poll_interval_s{account=~\"$account\", org_id=~\"$org_id\"}",
+          "legendFormat": "{{account}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "CC OTEL Correlation: Usage Exporter ↔ Claude Code Host Metrics",
+      "description": "Joins usage exporter metrics with Claude Code OTEL resource metrics via org_id = organization_id. Shows which CC host is consuming which account's quota.",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Session %" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "thresholds", "value": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 70 },
+                  { "color": "red", "value": 90 }
+                ]
+              }},
+              { "id": "custom.displayMode", "value": "color-background" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Weekly %" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "thresholds", "value": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 70 },
+                  { "color": "red", "value": 90 }
+                ]
+              }},
+              { "id": "custom.displayMode", "value": "color-background" }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Session %", "desc": true }]
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "expr": "claude_usage_session_utilization_percent{org_id=~\"$org_id\"}",
+          "legendFormat": "",
+          "refId": "session_util",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"}",
+          "legendFormat": "",
+          "refId": "weekly_util",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "expr": "count by (organization_id, host_name) (cc_otel_resource_info{organization_id=~\"$org_id\"})",
+          "legendFormat": "",
+          "refId": "cc_hosts",
+          "format": "table",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "title": "Session Utilization by Org (CC OTEL Join Key)",
+      "description": "Usage exporter session utilization keyed by org_id — the same dimension emitted by Claude Code OTEL as organization.id. Use this to correlate host-level CC metrics with account quota consumption.",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 26 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_session_utilization_percent{org_id=~\"$org_id\"}",
+          "legendFormat": "{{account}} (org: {{org_id}})",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "title": "Weekly Utilization by Org (CC OTEL Join Key)",
+      "description": "Usage exporter weekly utilization keyed by org_id — correlate with Claude Code OTEL organization.id resource attribute.",
+      "type": "bargauge",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 26 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      },
+      "targets": [
+        {
+          "expr": "claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"}",
+          "legendFormat": "{{account}} (org: {{org_id}})",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["claude", "usage", "otel"],
+  "templating": {
+    "list": [
+      {
+        "name": "account",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": "label_values(claude_usage_session_utilization_percent, account)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "refresh": 2
+      },
+      {
+        "name": "org_id",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "query": "label_values(claude_usage_session_utilization_percent, org_id)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "refresh": 2
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "Claude Usage Exporter",
+  "uid": "claude-usage-exporter"
+}

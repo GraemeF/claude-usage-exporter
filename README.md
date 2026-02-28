@@ -26,7 +26,11 @@ interval to `activeInterval`.
 
 ## Metrics
 
-All metrics carry an `account` label with the account name from your config.
+All metrics carry an `account` label (the account name from your config) and an
+`org_id` label (the organization ID). The `org_id` is the join key between these
+metrics and Claude Code OTEL metrics, which emit `organization.id` as a resource
+attribute — enabling correlation of which CC host is consuming which account's
+quota.
 
 | Metric | Type | Unit | Description |
 |--------|------|------|-------------|
@@ -129,3 +133,17 @@ docker run -d \
 |------|-------------|
 | `/metrics` | Prometheus metrics |
 | `/healthz` | Health check (HTTP 200) |
+
+## Grafana dashboard
+
+A pre-built dashboard is included at `grafana/claude-usage-exporter.json`. Import
+it into Grafana and select your Prometheus data source.
+
+The dashboard includes:
+
+- Session and weekly utilization time series
+- Poll errors and adaptive interval panels
+- **CC OTEL Correlation panel** — a table joining usage exporter metrics with
+  Claude Code OTEL host metrics via `org_id` = `organization_id`, showing which
+  CC host is consuming which account's quota
+- Bar gauges keyed by `org_id` for at-a-glance quota status
