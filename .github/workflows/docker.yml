@@ -40,9 +40,7 @@ jobs:
       - name: Load and tag image
         run: |
           docker load < result
-          IMAGE_ID=$(docker images --format '{{.ID}}' | head -1)
-          docker tag $IMAGE_ID ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}
-          docker tag $IMAGE_ID ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}
 
       - name: Push image
         run: |
