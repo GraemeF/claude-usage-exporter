@@ -1,0 +1,10 @@
+{"issue_id":"cue-claude_usage_exporter-polecat-jasper","label":"gt:agent"}
+{"issue_id":"cue-claude_usage_exporter-polecat-obsidian","label":"done-intent:COMPLETED:1772273380"}
+{"issue_id":"cue-claude_usage_exporter-polecat-obsidian","label":"gt:agent"}
+{"issue_id":"cue-claude_usage_exporter-polecat-onyx","label":"gt:agent"}
+{"issue_id":"cue-claude_usage_exporter-polecat-quartz","label":"gt:agent"}
+{"issue_id":"cue-claude_usage_exporter-refinery","label":"backoff-until:1772273492"}
+{"issue_id":"cue-claude_usage_exporter-refinery","label":"gt:agent"}
+{"issue_id":"cue-claude_usage_exporter-refinery","label":"idle:5"}
+{"issue_id":"cue-claude_usage_exporter-witness","label":"gt:agent"}
+{"issue_id":"cue-rig-claude_usage_exporter","label":"gt:rig"}
