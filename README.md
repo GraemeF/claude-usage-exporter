@@ -84,6 +84,31 @@ accounts:
 | `LISTEN_ADDR` | `:9091` | Override `listenAddr` from config |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | *(unset)* | Enable OTLP push exporter |
 
+## Quickstart (Docker Compose)
+
+The fastest way to get a working stack with Prometheus and Grafana:
+
+1. Copy `accounts.example.yaml` to `accounts.yaml` and fill in your credentials:
+
+   ```bash
+   cp accounts.example.yaml accounts.yaml
+   # Edit accounts.yaml with your orgId and sessionKey values
+   ```
+
+2. Start the stack:
+
+   ```bash
+   docker compose up -d
+   ```
+
+3. Open Grafana at [http://localhost:3000](http://localhost:3000) — the Claude
+   Usage dashboard is pre-provisioned with no login required.
+
+   Prometheus is available at [http://localhost:9090](http://localhost:9090) and
+   the exporter metrics at [http://localhost:9091/metrics](http://localhost:9091/metrics).
+
+To stop: `docker compose down` (add `-v` to also remove stored data).
+
 ## Usage
 
 ### Nix
