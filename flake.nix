@@ -13,7 +13,7 @@
 
         claude-usage-exporter = pkgs.buildGoModule {
           pname = "claude-usage-exporter";
-          version = "0.1.0";
+          version = "0.1.1";
           src = ./.;
           # Run `nix build` once to get the correct hash from the error message.
           vendorHash = "sha256-9K619hTXYJ0h1c9ZEZLHNPwJxVRDTW0XFFMD55nGezk=";
