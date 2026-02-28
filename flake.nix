@@ -17,6 +17,8 @@
           src = ./.;
           # Run `nix build` once to get the correct hash from the error message.
           vendorHash = "sha256-9K619hTXYJ0h1c9ZEZLHNPwJxVRDTW0XFFMD55nGezk=";
+          env.CGO_ENABLED = "0";
+          ldflags = [ "-s" "-w" ];
           meta.mainProgram = "claude-usage-exporter";
         };
       in
