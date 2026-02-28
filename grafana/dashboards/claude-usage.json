@@ -32,7 +32,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_utilization",
+          "expr": "claude_usage_session_utilization_percent",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -65,7 +65,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_utilization",
+          "expr": "claude_usage_weekly_utilization_percent",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -96,7 +96,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_utilization",
+          "expr": "claude_usage_session_utilization_percent",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -127,7 +127,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_utilization",
+          "expr": "claude_usage_weekly_utilization_percent",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -158,7 +158,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_reset - time()",
+          "expr": "claude_usage_session_reset_seconds - time()",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -189,7 +189,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_reset - time()",
+          "expr": "claude_usage_weekly_reset_seconds - time()",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -234,7 +234,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_poll_interval",
+          "expr": "claude_usage_poll_interval_seconds",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -324,14 +324,14 @@
       ],
       "targets": [
         {
-          "expr": "claude_usage_session_utilization",
+          "expr": "claude_usage_session_utilization_percent",
           "legendFormat": "",
           "refId": "session_util",
           "format": "table",
           "instant": true
         },
         {
-          "expr": "claude_usage_weekly_utilization",
+          "expr": "claude_usage_weekly_utilization_percent",
           "legendFormat": "",
           "refId": "weekly_util",
           "format": "table",
@@ -375,7 +375,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_utilization",
+          "expr": "claude_usage_session_utilization_percent",
           "legendFormat": "{{account}} (org: {{org_id}})",
           "refId": "A",
           "instant": true
@@ -411,7 +411,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_utilization",
+          "expr": "claude_usage_weekly_utilization_percent",
           "legendFormat": "{{account}} (org: {{org_id}})",
           "refId": "A",
           "instant": true

@@ -36,12 +36,12 @@ quota.
 
 | Metric | Type | Unit | Description |
 |--------|------|------|-------------|
-| `claude_usage_session_utilization` | Gauge | % | 5-hour session window utilization (0–100) |
-| `claude_usage_weekly_utilization` | Gauge | % | 7-day weekly utilization (0–100) |
-| `claude_usage_session_reset` | Gauge | seconds | Unix timestamp when the 5-hour session window resets |
-| `claude_usage_weekly_reset` | Gauge | seconds | Unix timestamp when the 7-day weekly limit resets |
-| `claude_usage_poll_last_success` | Gauge | seconds | Unix timestamp of the last successful poll |
-| `claude_usage_poll_interval` | Gauge | seconds | Current adaptive poll interval |
+| `claude_usage_session_utilization_percent` | Gauge | % | 5-hour session window utilization (0–100) |
+| `claude_usage_weekly_utilization_percent` | Gauge | % | 7-day weekly utilization (0–100) |
+| `claude_usage_session_reset_seconds` | Gauge | seconds | Unix timestamp when the 5-hour session window resets |
+| `claude_usage_weekly_reset_seconds` | Gauge | seconds | Unix timestamp when the 7-day weekly limit resets |
+| `claude_usage_poll_last_success_seconds` | Gauge | seconds | Unix timestamp of the last successful poll |
+| `claude_usage_poll_interval_seconds` | Gauge | seconds | Current adaptive poll interval |
 | `claude_usage_poll_errors_total` | Counter | | Total number of failed polls |
 
 ## OTLP support

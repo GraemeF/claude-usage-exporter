@@ -127,7 +127,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "claude_usage_session_utilization{account=~\"$account\"}",
+          "expr": "claude_usage_session_utilization_percent{account=~\"$account\"}",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -198,7 +198,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "claude_usage_weekly_utilization{account=~\"$account\"}",
+          "expr": "claude_usage_weekly_utilization_percent{account=~\"$account\"}",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -269,7 +269,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "clamp_min(claude_usage_session_reset{account=~\"$account\"} - time(), 0)",
+          "expr": "clamp_min(claude_usage_session_reset_seconds{account=~\"$account\"} - time(), 0)",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -340,7 +340,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "clamp_min(claude_usage_weekly_reset{account=~\"$account\"} - time(), 0)",
+          "expr": "clamp_min(claude_usage_weekly_reset_seconds{account=~\"$account\"} - time(), 0)",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -443,7 +443,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "claude_usage_session_utilization{account=~\"$account\"}",
+          "expr": "claude_usage_session_utilization_percent{account=~\"$account\"}",
           "legendFormat": "{{account}} — session",
           "refId": "A"
         },
@@ -453,7 +453,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "claude_usage_weekly_utilization{account=~\"$account\"}",
+          "expr": "claude_usage_weekly_utilization_percent{account=~\"$account\"}",
           "legendFormat": "{{account}} — weekly",
           "refId": "B"
         }
@@ -545,7 +545,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "claude_usage_poll_interval{account=~\"$account\"}",
+          "expr": "claude_usage_poll_interval_seconds{account=~\"$account\"}",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -661,14 +661,14 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(claude_usage_session_utilization, account)",
+        "definition": "label_values(claude_usage_session_utilization_percent, account)",
         "includeAll": true,
         "multi": true,
         "name": "account",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(claude_usage_session_utilization, account)"
+          "query": "label_values(claude_usage_session_utilization_percent, account)"
         },
         "refresh": 2,
         "regex": "",
