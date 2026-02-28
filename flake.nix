@@ -16,7 +16,7 @@
           version = "0.1.0";
           src = ./.;
           # Run `nix build` once to get the correct hash from the error message.
-          vendorHash = pkgs.lib.fakeHash;
+          vendorHash = "sha256-9K619hTXYJ0h1c9ZEZLHNPwJxVRDTW0XFFMD55nGezk=";
           meta.mainProgram = "claude-usage-exporter";
         };
       in
