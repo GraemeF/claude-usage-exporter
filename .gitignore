@@ -8,3 +8,4 @@ result-*
 .claude/commands/
 .logs/
 .beads/
+!.beads/formulas/

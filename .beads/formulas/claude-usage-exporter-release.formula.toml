@@ -1,0 +1,291 @@
+description = """
+claude-usage-exporter release workflow — from clean tree to published image.
+
+1. Preflight checks (clean git, up to date)
+2. Build verification (nix build)
+3. Version bump (flake.nix)
+4. Git operations (commit, tag, push)
+5. CI verification (GitHub Actions builds and pushes image)
+6. GitHub Release with handwritten notes
+
+## Usage
+
+```bash
+bd mol wisp create claude-usage-exporter-release --var version=0.1.0
+```
+"""
+formula = "claude-usage-exporter-release"
+type = "workflow"
+version = 1
+
+[vars.version]
+description = "The semantic version to release (e.g., 0.1.0)"
+required = true
+
+[[steps]]
+id = "verify-orientation"
+title = "Verify: Correct repository"
+description = """
+**CRITICAL: Verify you are in the correct repository before proceeding.**
+
+```bash
+pwd
+git remote -v
+head -3 flake.nix
+```
+
+**Expected results:**
+- Working directory ends with `/claude-usage-exporter`
+- Remote is `git@github.com:GraemeF/claude-usage-exporter.git`
+- flake.nix shows the exporter description
+
+**DO NOT PROCEED** until all checks pass.
+"""
+
+[[steps]]
+id = "preflight-git"
+title = "Preflight: Check git status"
+needs = ["verify-orientation"]
+description = """
+Ensure working tree is clean before starting release.
+
+```bash
+git status
+```
+
+If there are uncommitted changes, either commit or stash them before proceeding.
+"""
+
+[[steps]]
+id = "preflight-pull"
+title = "Preflight: Pull latest"
+needs = ["preflight-git"]
+description = """
+Ensure we're up to date with origin.
+
+```bash
+git pull --rebase origin main
+```
+
+Resolve any conflicts before proceeding.
+"""
+
+[[steps]]
+id = "review-changes"
+title = "Review changes since last release"
+needs = ["preflight-pull"]
+description = """
+Understand what's being released.
+
+```bash
+git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --oneline --no-merges
+```
+
+Categorize changes:
+- Features
+- Fixes
+- Breaking changes
+"""
+
+[[steps]]
+id = "run-build"
+title = "Verify: Build passes"
+needs = ["review-changes"]
+description = """
+Confirm the Nix build succeeds before tagging.
+
+```bash
+nix build .#default
+nix build .#dockerImage
+```
+
+Both must succeed. If either fails, do NOT proceed — fix the issue first.
+
+Note: There is no automated test suite yet. Manual smoke testing is recommended.
+"""
+
+[[steps]]
+id = "fix-failures"
+title = "Fix: Build failures"
+needs = ["run-build"]
+description = """
+**This step only applies if nix build failed.**
+
+For each failure:
+1. Create a bead: `bd create --title="<failure description>" --type=bug --priority=1`
+2. Dispatch a polecat: `gt sling <bead-id> claude_usage_exporter`
+3. Wait for fix, merge to main
+4. Re-run build
+
+Only proceed when both builds are green.
+"""
+
+[[steps]]
+id = "bump-version"
+title = "Bump version to {{version}}"
+needs = ["fix-failures"]
+description = """
+Update the version string in flake.nix.
+
+Find this line:
+```nix
+version = "...";
+```
+
+Change it to:
+```nix
+version = "{{version}}";
+```
+
+Verify:
+```bash
+grep 'version = ' flake.nix
+```
+"""
+
+[[steps]]
+id = "commit-release"
+title = "Commit release"
+needs = ["bump-version"]
+description = """
+Stage and commit the version bump.
+
+```bash
+git add flake.nix
+git commit -m "chore: Release v{{version}}"
+```
+"""
+
+[[steps]]
+id = "create-tag"
+title = "Create release tag"
+needs = ["commit-release"]
+description = """
+Create an annotated git tag.
+
+```bash
+git tag -a v{{version}} -m "Release v{{version}}"
+```
+
+Verify: `git tag -l | tail -5`
+"""
+
+[[steps]]
+id = "push-main"
+title = "Push to main"
+needs = ["create-tag"]
+description = """
+Push the release commit to origin.
+
+```bash
+git push origin main
+```
+"""
+
+[[steps]]
+id = "push-tag"
+title = "Push release tag"
+needs = ["push-main"]
+description = """
+Push the version tag to trigger the GHA release workflow.
+
+```bash
+git push origin v{{version}}
+```
+
+This triggers `.github/workflows/release.yml` which builds and pushes the Docker image to ghcr.io.
+"""
+
+[[steps]]
+id = "wait-ci"
+title = "Wait for CI"
+needs = ["push-tag"]
+description = """
+Monitor GitHub Actions for release completion.
+
+```bash
+gh run list --limit 5
+gh run watch
+```
+
+Expected: ~5-10 minutes for Nix build + image push.
+
+Watch for:
+- test workflow pass
+- release workflow (docker build + push to ghcr.io) pass
+"""
+
+[[steps]]
+id = "create-gh-release"
+title = "Create GitHub Release"
+needs = ["wait-ci"]
+description = """
+Create a GitHub release with **MANUALLY WRITTEN** release notes.
+
+**DO NOT use --generate-notes or auto-generate from commits.**
+
+Write a proper changelog covering what changed and why it matters to users.
+
+```bash
+# Review what changed for context
+PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+if [ -n "$PREV_TAG" ]; then
+  git log ${PREV_TAG}..v{{version}} --oneline --no-merges
+else
+  git log --oneline --no-merges
+fi
+
+# Create release with hand-written notes
+gh release create v{{version}} \
+  --title "v{{version}}" \
+  --notes "## What's new
+- <describe new features>
+
+## Fixes
+- <describe bug fixes, or 'No fixes in this release'>
+
+## Docker image
+\`\`\`bash
+docker pull ghcr.io/graemef/claude-usage-exporter:v{{version}}
+\`\`\`
+"
+```
+
+**Quality bar**: Notes should help users understand what changed and whether to upgrade.
+Verify at: https://github.com/GraemeF/claude-usage-exporter/releases
+"""
+
+[[steps]]
+id = "verify-image"
+title = "Verify Docker image"
+needs = ["create-gh-release"]
+description = """
+Confirm the image was published successfully.
+
+```bash
+docker pull ghcr.io/graemef/claude-usage-exporter:v{{version}}
+docker run --rm ghcr.io/graemef/claude-usage-exporter:v{{version}} --help 2>/dev/null || \
+  docker run --rm ghcr.io/graemef/claude-usage-exporter:v{{version}} || true
+```
+
+Or check: https://github.com/GraemeF/claude-usage-exporter/pkgs/container/claude-usage-exporter
+"""
+
+[[steps]]
+id = "release-complete"
+title = "Release complete"
+needs = ["verify-image"]
+description = """
+Release v{{version}} is complete!
+
+Summary:
+- Build verified
+- Version bumped in flake.nix
+- Git tag pushed
+- GHA built and pushed image to ghcr.io
+- GitHub Release created with handwritten notes
+
+Optional next steps:
+- Announce the release
+- Update any dependent configurations to use v{{version}}
+"""
