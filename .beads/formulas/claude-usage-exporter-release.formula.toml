@@ -245,9 +245,7 @@ gh release create v{{version}} \
 - <describe bug fixes, or 'No fixes in this release'>
 
 ## Docker image
-\`\`\`bash
-docker pull ghcr.io/graemef/claude-usage-exporter:v{{version}}
-\`\`\`
+    docker pull ghcr.io/graemef/claude-usage-exporter:v{{version}}
 "
 ```
 

@@ -30,7 +30,7 @@
             # cacert is required for HTTPS calls to claude.ai
             contents = [ claude-usage-exporter pkgs.cacert ];
             config = {
-              Cmd = [ "/bin/claude-usage-exporter" ];
+              Entrypoint = [ (pkgs.lib.getExe claude-usage-exporter) ];
               ExposedPorts."9091/tcp" = {};
               Env = [
                 "ACCOUNTS_FILE=/config/accounts.yaml"
