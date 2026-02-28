@@ -28,7 +28,17 @@
           "min": 0,
           "max": 100
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ideal" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom" },
@@ -39,6 +49,11 @@
           "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} ({{org_id}})",
           "refId": "A"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\", org_id=~\"$org_id\"}) - time()) / 18000) * 100, 100), 0)",
+          "legendFormat": "Ideal",
+          "refId": "B"
         }
       ]
     },
@@ -53,7 +68,17 @@
           "min": 0,
           "max": 100
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ideal" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom" },
@@ -64,6 +89,11 @@
           "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} ({{org_id}})",
           "refId": "A"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\", org_id=~\"$org_id\"}) - time()) / 604800) * 100, 100), 0)",
+          "legendFormat": "Ideal",
+          "refId": "B"
         }
       ]
     },

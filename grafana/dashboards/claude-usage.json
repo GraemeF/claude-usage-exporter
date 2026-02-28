@@ -24,7 +24,17 @@
           },
           "color": { "mode": "palette-classic" }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ideal" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          }
+        ]
       },
       "options": {
         "tooltip": { "mode": "multi" },
@@ -35,6 +45,11 @@
           "expr": "max by (account, org_id) (claude_usage_session_utilization_percent)",
           "legendFormat": "{{account}}",
           "refId": "A"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min(claude_usage_session_reset_seconds) - time()) / 18000) * 100, 100), 0)",
+          "legendFormat": "Ideal",
+          "refId": "B"
         }
       ]
     },
@@ -57,7 +72,17 @@
           },
           "color": { "mode": "palette-classic" }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Ideal" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          }
+        ]
       },
       "options": {
         "tooltip": { "mode": "multi" },
@@ -68,6 +93,11 @@
           "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent)",
           "legendFormat": "{{account}}",
           "refId": "A"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min(claude_usage_weekly_reset_seconds) - time()) / 604800) * 100, 100), 0)",
+          "legendFormat": "Ideal",
+          "refId": "B"
         }
       ]
     },
