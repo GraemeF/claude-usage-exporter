@@ -196,7 +196,7 @@
       ]
     },
     {
-      "title": "Poll Errors (1h)",
+      "title": "Poll Errors (5m)",
       "type": "timeseries",
       "gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 },
       "fieldConfig": {
@@ -212,7 +212,7 @@
       },
       "targets": [
         {
-          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total[1h]))",
+          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total[5m]))",
           "legendFormat": "{{account}}",
           "refId": "A"
         }

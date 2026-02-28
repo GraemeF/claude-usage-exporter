@@ -638,12 +638,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total{account=~\"$account\"}[1h]))",
+          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total{account=~\"$account\"}[5m]))",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
       ],
-      "title": "Poll Errors (1h)",
+      "title": "Poll Errors (5m)",
       "type": "timeseries"
     }
   ],

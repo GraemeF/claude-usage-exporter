@@ -38,7 +38,7 @@ groups:
           description: "Account {{ $labels.account }} weekly utilization is at {{ $value | printf \"%.1f\" }}%, nearly exhausted for the 7-day window."
 
       - alert: ClaudeUsagePollErrors
-        expr: sum by (account, org_id) (increase(claude_usage_poll_errors_total[1h])) > 0
+        expr: sum by (account, org_id) (increase(claude_usage_poll_errors_total[5m])) > 0
         for: 5m
         labels:
           severity: critical
