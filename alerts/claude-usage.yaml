@@ -1,0 +1,47 @@
+groups:
+  - name: claude-usage
+    rules:
+      - alert: ClaudeUsageSessionUtilizationWarning
+        expr: claude_usage_session_utilization > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Claude session utilization above 80% for {{ $labels.account }}"
+          description: "Account {{ $labels.account }} session utilization is at {{ $value | printf \"%.1f\" }}%, approaching the 5-hour window limit."
+
+      - alert: ClaudeUsageSessionUtilizationCritical
+        expr: claude_usage_session_utilization > 95
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Claude session utilization above 95% for {{ $labels.account }}"
+          description: "Account {{ $labels.account }} session utilization is at {{ $value | printf \"%.1f\" }}%, nearly exhausted for the 5-hour window."
+
+      - alert: ClaudeUsageWeeklyUtilizationWarning
+        expr: claude_usage_weekly_utilization > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Claude weekly utilization above 80% for {{ $labels.account }}"
+          description: "Account {{ $labels.account }} weekly utilization is at {{ $value | printf \"%.1f\" }}%, approaching the 7-day limit."
+
+      - alert: ClaudeUsageWeeklyUtilizationCritical
+        expr: claude_usage_weekly_utilization > 95
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Claude weekly utilization above 95% for {{ $labels.account }}"
+          description: "Account {{ $labels.account }} weekly utilization is at {{ $value | printf \"%.1f\" }}%, nearly exhausted for the 7-day window."
+
+      - alert: ClaudeUsagePollErrors
+        expr: rate(claude_usage_poll_errors_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Claude usage poll errors for {{ $labels.account }}"
+          description: "Account {{ $labels.account }} has been experiencing poll errors for more than 5 minutes. Check credentials and connectivity."
