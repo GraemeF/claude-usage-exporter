@@ -2,7 +2,7 @@ groups:
   - name: claude-usage
     rules:
       - alert: ClaudeUsageSessionUtilizationWarning
-        expr: claude_usage_session_utilization > 80
+        expr: claude_usage_session_utilization_percent > 80
         for: 1m
         labels:
           severity: warning
@@ -11,7 +11,7 @@ groups:
           description: "Account {{ $labels.account }} session utilization is at {{ $value | printf \"%.1f\" }}%, approaching the 5-hour window limit."
 
       - alert: ClaudeUsageSessionUtilizationCritical
-        expr: claude_usage_session_utilization > 95
+        expr: claude_usage_session_utilization_percent > 95
         for: 1m
         labels:
           severity: critical
@@ -20,7 +20,7 @@ groups:
           description: "Account {{ $labels.account }} session utilization is at {{ $value | printf \"%.1f\" }}%, nearly exhausted for the 5-hour window."
 
       - alert: ClaudeUsageWeeklyUtilizationWarning
-        expr: claude_usage_weekly_utilization > 80
+        expr: claude_usage_weekly_utilization_percent > 80
         for: 1m
         labels:
           severity: warning
@@ -29,7 +29,7 @@ groups:
           description: "Account {{ $labels.account }} weekly utilization is at {{ $value | printf \"%.1f\" }}%, approaching the 7-day limit."
 
       - alert: ClaudeUsageWeeklyUtilizationCritical
-        expr: claude_usage_weekly_utilization > 95
+        expr: claude_usage_weekly_utilization_percent > 95
         for: 1m
         labels:
           severity: critical
