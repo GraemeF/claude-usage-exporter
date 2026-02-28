@@ -36,7 +36,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} ({{org_id}})",
           "refId": "A"
         }
@@ -61,7 +61,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{account=~\"$account\", org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} ({{org_id}})",
           "refId": "A"
         }
@@ -84,7 +84,7 @@
       },
       "targets": [
         {
-          "expr": "increase(claude_usage_poll_errors_total{account=~\"$account\", org_id=~\"$org_id\"}[1h])",
+          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total{account=~\"$account\", org_id=~\"$org_id\"}[1h]))",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -107,7 +107,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_poll_interval_s{account=~\"$account\", org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_poll_interval_s{account=~\"$account\", org_id=~\"$org_id\"})",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -166,14 +166,14 @@
       ],
       "targets": [
         {
-          "expr": "claude_usage_session_utilization_percent{org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{org_id=~\"$org_id\"})",
           "legendFormat": "",
           "refId": "session_util",
           "format": "table",
           "instant": true
         },
         {
-          "expr": "claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"})",
           "legendFormat": "",
           "refId": "weekly_util",
           "format": "table",
@@ -217,7 +217,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_session_utilization_percent{org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} (org: {{org_id}})",
           "refId": "A",
           "instant": true
@@ -253,7 +253,7 @@
       },
       "targets": [
         {
-          "expr": "claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"}",
+          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{org_id=~\"$org_id\"})",
           "legendFormat": "{{account}} (org: {{org_id}})",
           "refId": "A",
           "instant": true
