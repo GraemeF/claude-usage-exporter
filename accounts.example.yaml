@@ -1,0 +1,19 @@
+# Copy to accounts.yaml and fill in your credentials.
+# orgId: found in claude.ai browser cookies or network requests
+# sessionKey: the sk-ant-sid... value from your sessionKey cookie
+
+# Tuning (all optional — these are the defaults):
+activeInterval: 30s    # poll interval when usage is changing
+idleInterval: 5m       # poll interval when usage is stable
+idleThreshold: 3       # unchanged polls before backing off
+resetBurstWindow: 2m   # poll at activeInterval when reset is this close
+listenAddr: ":9091"    # Prometheus /metrics endpoint
+
+accounts:
+  - name: personal
+    orgId: "your-org-id"
+    sessionKey: "sk-ant-sid..."
+
+  - name: work
+    orgId: "your-work-org-id"
+    sessionKey: "sk-ant-sid..."
