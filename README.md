@@ -56,6 +56,26 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 Any other `OTEL_EXPORTER_OTLP_*` variables (headers, TLS, etc.) are respected
 by the underlying Go OTLP SDK.
 
+## Getting credentials
+
+Both values come from your browser while logged in to [claude.ai](https://claude.ai).
+
+**orgId**
+
+1. Open DevTools → Network tab
+2. Reload claude.ai and find any request to `claude.ai/api/organizations/...`
+3. The UUID in the URL path is your `orgId`
+
+Or: DevTools → Application → Cookies → `claude.ai` → find the `__Host-user-preferences` or similar cookie and look for an org UUID in its value. The network request method is more reliable.
+
+**sessionKey**
+
+1. DevTools → Application → Cookies → `claude.ai`
+2. Find the cookie named `sessionKey` — its value starts with `sk-ant-sid`
+3. Copy the full value
+
+> **Note:** Session cookies expire. When the exporter starts returning errors for an account, the `sessionKey` needs refreshing. The `claude_usage_poll_errors_total` metric and the Grafana dashboard will alert you when this happens.
+
 ## Configuration
 
 Create an `accounts.yaml` (see `accounts.example.yaml`):
