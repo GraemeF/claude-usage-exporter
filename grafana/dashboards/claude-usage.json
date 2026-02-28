@@ -196,12 +196,13 @@
       ]
     },
     {
-      "title": "Poll Errors",
+      "title": "Poll Errors (1h)",
       "type": "timeseries",
       "gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" }
+          "color": { "mode": "palette-classic" },
+          "unit": "none"
         },
         "overrides": []
       },
@@ -211,7 +212,7 @@
       },
       "targets": [
         {
-          "expr": "rate(claude_usage_poll_errors_total[5m])",
+          "expr": "increase(claude_usage_poll_errors_total[1h])",
           "legendFormat": "{{account}}",
           "refId": "A"
         }

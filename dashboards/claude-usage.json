@@ -604,7 +604,7 @@
               }
             ]
           },
-          "unit": "ops"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -638,12 +638,12 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "rate(claude_usage_poll_errors_total{account=~\"$account\"}[$__rate_interval])",
+          "expr": "increase(claude_usage_poll_errors_total{account=~\"$account\"}[1h])",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
       ],
-      "title": "Poll Error Rate",
+      "title": "Poll Errors (1h)",
       "type": "timeseries"
     }
   ],

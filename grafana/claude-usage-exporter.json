@@ -68,12 +68,14 @@
       ]
     },
     {
-      "title": "Poll Errors",
+      "title": "Poll Errors (1h)",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "none"
+        },
         "overrides": []
       },
       "options": {
@@ -82,8 +84,8 @@
       },
       "targets": [
         {
-          "expr": "rate(claude_usage_poll_errors_total{account=~\"$account\", org_id=~\"$org_id\"}[5m])",
-          "legendFormat": "{{account}} errors/s",
+          "expr": "increase(claude_usage_poll_errors_total{account=~\"$account\", org_id=~\"$org_id\"}[1h])",
+          "legendFormat": "{{account}}",
           "refId": "A"
         }
       ]
