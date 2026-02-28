@@ -422,7 +422,8 @@
   "schemaVersion": 39,
   "tags": ["claude", "otel"],
   "templating": { "list": [] },
-  "time": { "from": "now-6h", "to": "now" },
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
   "title": "Claude Usage",
   "uid": "claude-usage"
 }
