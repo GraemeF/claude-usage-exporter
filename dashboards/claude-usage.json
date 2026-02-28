@@ -439,6 +439,9 @@
         "y": 6
       },
       "id": 5,
+      "maxPerRow": 1,
+      "repeat": "account",
+      "repeatDirection": "v",
       "options": {
         "legend": {
           "calcs": [
@@ -463,7 +466,7 @@
           },
           "editorMode": "code",
           "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{account=~\"$account\"})",
-          "legendFormat": "{{account}} — session",
+          "legendFormat": "session",
           "refId": "A"
         },
         {
@@ -473,7 +476,7 @@
           },
           "editorMode": "code",
           "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{account=~\"$account\"})",
-          "legendFormat": "{{account}} — weekly",
+          "legendFormat": "weekly",
           "refId": "B"
         },
         {
@@ -497,7 +500,7 @@
           "refId": "D"
         }
       ],
-      "title": "Utilization Over Time",
+      "title": "Utilization Over Time — $account",
       "type": "timeseries"
     },
     {

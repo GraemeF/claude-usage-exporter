@@ -6,9 +6,12 @@
   "links": [],
   "panels": [
     {
-      "title": "Session Utilization",
+      "title": "Utilization Over Time — $account",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "repeat": "account",
+      "repeatDirection": "v",
+      "maxPerRow": 1,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -26,58 +29,19 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Ideal" },
+            "matcher": { "id": "byName", "options": "Ideal — session" },
             "properties": [
               { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
               { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
               { "id": "custom.fillOpacity", "value": 0 },
               { "id": "custom.lineWidth", "value": 1 }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "table", "placement": "bottom" }
-      },
-      "targets": [
-        {
-          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent)",
-          "legendFormat": "{{account}}",
-          "refId": "A"
-        },
-        {
-          "expr": "clamp_min(clamp_max((1 - (min(claude_usage_session_reset_seconds) - time()) / 18000) * 100, 100), 0)",
-          "legendFormat": "Ideal",
-          "refId": "B"
-        }
-      ]
-    },
-    {
-      "title": "Weekly Utilization",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 60 },
-              { "color": "red", "value": 80 }
             ]
           },
-          "color": { "mode": "palette-classic" }
-        },
-        "overrides": [
           {
-            "matcher": { "id": "byName", "options": "Ideal" },
+            "matcher": { "id": "byName", "options": "Ideal — weekly" },
             "properties": [
               { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
-              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.lineStyle", "value": { "dash": [4, 4], "fill": "dash" } },
               { "id": "custom.fillOpacity", "value": 0 },
               { "id": "custom.lineWidth", "value": 1 }
             ]
@@ -85,19 +49,29 @@
         ]
       },
       "options": {
-        "tooltip": { "mode": "multi" },
-        "legend": { "displayMode": "table", "placement": "bottom" }
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
       },
       "targets": [
         {
-          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent)",
-          "legendFormat": "{{account}}",
+          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{account=~\"$account\"})",
+          "legendFormat": "session",
           "refId": "A"
         },
         {
-          "expr": "clamp_min(clamp_max((1 - (min(claude_usage_weekly_reset_seconds) - time()) / 604800) * 100, 100), 0)",
-          "legendFormat": "Ideal",
+          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{account=~\"$account\"})",
+          "legendFormat": "weekly",
           "refId": "B"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\"}) - time()) / 18000) * 100, 100), 0)",
+          "legendFormat": "Ideal — session",
+          "refId": "C"
+        },
+        {
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\"}) - time()) / 604800) * 100, 100), 0)",
+          "legendFormat": "Ideal — weekly",
+          "refId": "D"
         }
       ]
     },
@@ -452,7 +426,21 @@
   ],
   "schemaVersion": 39,
   "tags": ["claude", "otel"],
-  "templating": { "list": [] },
+  "templating": {
+    "list": [
+      {
+        "name": "account",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(claude_usage_session_utilization_percent, account)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "selected": true, "text": "All", "value": "$__all" },
+        "refresh": 2,
+        "sort": 1
+      }
+    ]
+  },
   "refresh": "30s",
   "time": { "from": "now-1h", "to": "now" },
   "title": "Claude Usage",
