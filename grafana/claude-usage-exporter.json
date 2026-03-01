@@ -18,12 +18,82 @@
   "links": [],
   "panels": [
     {
+      "title": "Cumulative Usage — All Accounts",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Session (actual)" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Session (ideal)" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "light-blue", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Weekly (actual)" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Weekly (ideal)" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "light-green", "mode": "fixed" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
+      "targets": [
+        {
+          "expr": "sum(claude_usage_session_utilization_percent)",
+          "legendFormat": "Session (actual)",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_session_reset_seconds - time()) / 18000) * 100, 100), 0))",
+          "legendFormat": "Session (ideal)",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(claude_usage_weekly_utilization_percent)",
+          "legendFormat": "Weekly (actual)",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_weekly_reset_seconds - time()) / 604800) * 100, 100), 0))",
+          "legendFormat": "Weekly (ideal)",
+          "refId": "D"
+        }
+      ]
+    },
+    {
       "title": "Utilization Over Time — $account",
       "type": "timeseries",
       "repeat": "account",
       "repeatDirection": "v",
       "maxPerRow": 1,
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
@@ -82,7 +152,7 @@
     {
       "title": "Poll Errors (5m)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
@@ -105,7 +175,7 @@
     {
       "title": "Poll Interval (Adaptive)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
@@ -129,7 +199,7 @@
       "title": "CC OTEL Correlation: Usage Exporter ↔ Claude Code Host Metrics",
       "description": "Joins usage exporter metrics with Claude Code OTEL resource metrics via org_id = organization_id. Shows which CC host is consuming which account's quota.",
       "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 16 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {},
@@ -204,7 +274,7 @@
       "title": "Session Utilization by Org (CC OTEL Join Key)",
       "description": "Usage exporter session utilization keyed by org_id — the same dimension emitted by Claude Code OTEL as organization.id. Use this to correlate host-level CC metrics with account quota consumption.",
       "type": "bargauge",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 26 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 34 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
@@ -240,7 +310,7 @@
       "title": "Weekly Utilization by Org (CC OTEL Join Key)",
       "description": "Usage exporter weekly utilization keyed by org_id — correlate with Claude Code OTEL organization.id resource attribute.",
       "type": "bargauge",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 26 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 34 },
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
