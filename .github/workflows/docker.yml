@@ -40,7 +40,8 @@ jobs:
       - name: Load and tag image
         run: |
           docker load < result
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}
+          docker tag claude-usage-exporter:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker tag claude-usage-exporter:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}
 
       - name: Push image
         run: |

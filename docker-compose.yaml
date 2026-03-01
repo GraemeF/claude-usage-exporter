@@ -1,6 +1,6 @@
 services:
   exporter:
-    image: ghcr.io/graemef/claude-usage-exporter:latest
+    image: ghcr.io/codeforbreakfast/claude-usage-exporter:latest
     volumes:
       - ./accounts.yaml:/config/accounts.yaml:ro
     ports:

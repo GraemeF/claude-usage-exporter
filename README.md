@@ -161,7 +161,7 @@ Run:
 docker run -d \
   -v /path/to/accounts.yaml:/config/accounts.yaml:ro \
   -p 9091:9091 \
-  ghcr.io/graemef/claude-usage-exporter:latest
+  ghcr.io/codeforbreakfast/claude-usage-exporter:latest
 ```
 
 With OTLP enabled:
@@ -171,7 +171,7 @@ docker run -d \
   -v /path/to/accounts.yaml:/config/accounts.yaml:ro \
   -p 9091:9091 \
   -e OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 \
-  ghcr.io/graemef/claude-usage-exporter:latest
+  ghcr.io/codeforbreakfast/claude-usage-exporter:latest
 ```
 
 ### Endpoints

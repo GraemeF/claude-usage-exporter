@@ -27,7 +27,7 @@
           default = claude-usage-exporter;
 
           dockerImage = pkgs.dockerTools.buildLayeredImage {
-            name = "ghcr.io/graemef/claude-usage-exporter";
+            name = "claude-usage-exporter";
             tag = "latest";
             # cacert is required for HTTPS calls to claude.ai
             contents = [ claude-usage-exporter pkgs.cacert ];
