@@ -415,7 +415,7 @@
           {
             "matcher": { "id": "byName", "options": "Ideal — session" },
             "properties": [
-              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "color", "value": { "mode": "palette-classic" } },
               { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
               { "id": "custom.fillOpacity", "value": 0 },
               { "id": "custom.lineWidth", "value": 1 }
@@ -424,7 +424,7 @@
           {
             "matcher": { "id": "byName", "options": "Ideal — weekly" },
             "properties": [
-              { "id": "color", "value": { "fixedColor": "white", "mode": "fixed" } },
+              { "id": "color", "value": { "mode": "palette-classic" } },
               { "id": "custom.lineStyle", "value": { "dash": [4, 4], "fill": "dash" } },
               { "id": "custom.fillOpacity", "value": 0 },
               { "id": "custom.lineWidth", "value": 1 }
