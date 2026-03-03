@@ -327,6 +327,7 @@
         },
         "options": [],
         "hide": 2,
+        "skipUrlSync": true,
         "includeAll": false,
         "multi": true,
         "current": {},
