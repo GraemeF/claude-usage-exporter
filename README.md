@@ -190,7 +190,4 @@ The dashboard includes:
 
 - Session and weekly utilization time series
 - Poll errors and adaptive interval panels
-- **CC OTEL Correlation panel** — a table joining usage exporter metrics with
-  Claude Code OTEL host metrics via `org_id` = `organization_id`, showing which
-  CC host is consuming which account's quota
 - Bar gauges keyed by `org_id` for at-a-glance quota status
