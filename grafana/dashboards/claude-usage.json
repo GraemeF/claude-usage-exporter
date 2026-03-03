@@ -320,7 +320,12 @@
         "name": "account",
         "type": "query",
         "datasource": { "type": "prometheus", "uid": "prometheus" },
-        "query": "label_values(claude_usage_session_utilization_percent, account)",
+        "definition": "label_values(claude_usage_session_utilization_percent, account)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(claude_usage_session_utilization_percent, account)"
+        },
+        "options": [],
         "hide": 2,
         "includeAll": false,
         "multi": true,
