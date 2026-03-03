@@ -6,12 +6,72 @@
   "links": [],
   "panels": [
     {
+      "title": "Cumulative Usage — All Accounts",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Session (ideal)" },
+            "properties": [
+              { "id": "color", "value": { "mode": "palette-classic" } },
+              { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 },
+              { "id": "custom.spanNulls", "value": false }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Weekly (ideal)" },
+            "properties": [
+              { "id": "color", "value": { "mode": "palette-classic" } },
+              { "id": "custom.lineStyle", "value": { "dash": [4, 4], "fill": "dash" } },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.lineWidth", "value": 1 },
+              { "id": "custom.spanNulls", "value": false }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "max"] }
+      },
+      "targets": [
+        {
+          "expr": "sum(claude_usage_session_utilization_percent)",
+          "legendFormat": "Session (actual)",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(claude_usage_weekly_utilization_percent)",
+          "legendFormat": "Weekly (actual)",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_session_reset_seconds - time()) / 18000) * 100, 100), 0))",
+          "legendFormat": "Session (ideal)",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_weekly_reset_seconds - time()) / 604800) * 100, 100), 0))",
+          "legendFormat": "Weekly (ideal)",
+          "refId": "D"
+        }
+      ]
+    },
+    {
       "title": "Utilization Over Time — $account",
       "type": "timeseries",
       "repeat": "account",
       "repeatDirection": "v",
       "maxPerRow": 1,
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -80,7 +140,7 @@
     {
       "title": "Session Utilization (current)",
       "type": "gauge",
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 8 },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 16 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -111,7 +171,7 @@
     {
       "title": "Weekly Utilization (current)",
       "type": "gauge",
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 8 },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 16 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -143,7 +203,7 @@
       "title": "Session Reset",
       "description": "Time until 5-hour session window resets",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 8 },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 16 },
       "fieldConfig": {
         "defaults": {
           "unit": "dtdurations",
@@ -174,7 +234,7 @@
       "title": "Weekly Reset",
       "description": "Time until 7-day weekly limit resets",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 8 },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 16 },
       "fieldConfig": {
         "defaults": {
           "unit": "dtdurations",
@@ -204,7 +264,7 @@
     {
       "title": "Poll Errors (5m)",
       "type": "timeseries",
-      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -227,7 +287,7 @@
     {
       "title": "Poll Interval",
       "type": "timeseries",
-      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 14 },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -251,7 +311,7 @@
       "title": "CC OTEL Correlation: Account Utilization × Active Hosts",
       "description": "Joins usage exporter metrics with Claude Code OTEL resource metrics via org_id = organization_id. Shows which CC hosts are consuming each account's quota — identify which host needs its session key rotated when utilization is high.",
       "type": "table",
-      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 20 },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
       "fieldConfig": {
         "defaults": {},
         "overrides": [
@@ -357,7 +417,7 @@
       "title": "Session Utilization by Org",
       "description": "Session utilization keyed by org_id — the join key for correlating with Claude Code OTEL organization_id. Identify which accounts are running hot.",
       "type": "bargauge",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 30 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -393,7 +453,7 @@
       "title": "Weekly Utilization by Org",
       "description": "Weekly utilization keyed by org_id — correlate with Claude Code OTEL organization_id to see which accounts are approaching weekly limits.",
       "type": "bargauge",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 30 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
