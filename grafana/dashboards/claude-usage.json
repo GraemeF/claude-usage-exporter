@@ -85,10 +85,6 @@
               {
                 "id": "custom.lineWidth",
                 "value": 1
-              },
-              {
-                "id": "custom.spanNulls",
-                "value": false
               }
             ]
           },
@@ -122,10 +118,6 @@
               {
                 "id": "custom.lineWidth",
                 "value": 1
-              },
-              {
-                "id": "custom.spanNulls",
-                "value": false
               }
             ]
           }
@@ -157,12 +149,12 @@
           "refId": "B"
         },
         {
-          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_session_reset_seconds - time()) / 18000) * 100, 100), 0))",
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_session_reset_seconds - time()) / 18000) * 100, 100), 0) and claude_usage_session_reset_seconds > time())",
           "legendFormat": "Session (ideal)",
           "refId": "C"
         },
         {
-          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_weekly_reset_seconds - time()) / 604800) * 100, 100), 0))",
+          "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_weekly_reset_seconds - time()) / 604800) * 100, 100), 0) and claude_usage_weekly_reset_seconds > time())",
           "legendFormat": "Weekly (ideal)",
           "refId": "D"
         }
@@ -267,10 +259,6 @@
               {
                 "id": "custom.lineWidth",
                 "value": 1
-              },
-              {
-                "id": "custom.spanNulls",
-                "value": false
               }
             ]
           },
@@ -304,10 +292,6 @@
               {
                 "id": "custom.lineWidth",
                 "value": 1
-              },
-              {
-                "id": "custom.spanNulls",
-                "value": false
               }
             ]
           }
@@ -339,12 +323,12 @@
           "refId": "B"
         },
         {
-          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\"}) - time()) / 18000) * 100, 100), 0)",
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\"}) - time()) / 18000) * 100, 100), 0) and min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\"}) > time()",
           "legendFormat": "Ideal \u2014 session",
           "refId": "C"
         },
         {
-          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\"}) - time()) / 604800) * 100, 100), 0)",
+          "expr": "clamp_min(clamp_max((1 - (min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\"}) - time()) / 604800) * 100, 100), 0) and min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\"}) > time()",
           "legendFormat": "Ideal \u2014 weekly",
           "refId": "D"
         }
