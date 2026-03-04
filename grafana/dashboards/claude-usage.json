@@ -8,13 +8,19 @@
   "links": [],
   "panels": [
     {
+      "type": "row",
+      "title": "Cumulative",
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+    {
       "title": "Cumulative Usage \u2014 All Accounts",
       "type": "timeseries",
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -71,10 +77,7 @@
               {
                 "id": "custom.lineStyle",
                 "value": {
-                  "dash": [
-                    10,
-                    10
-                  ],
+                  "dash": [10, 10],
                   "fill": "dash"
                 }
               },
@@ -104,10 +107,7 @@
               {
                 "id": "custom.lineStyle",
                 "value": {
-                  "dash": [
-                    4,
-                    4
-                  ],
+                  "dash": [4, 4],
                   "fill": "dash"
                 }
               },
@@ -131,10 +131,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": ["lastNotNull", "max"]
         }
       },
       "targets": [
@@ -161,16 +158,20 @@
       ]
     },
     {
-      "title": "Utilization Over Time \u2014 $account",
-      "type": "timeseries",
+      "type": "row",
+      "title": "$account",
       "repeat": "account",
-      "repeatDirection": "v",
-      "maxPerRow": 1,
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 }
+    },
+    {
+      "title": "Utilization Over Time",
+      "type": "timeseries",
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 10
       },
       "fieldConfig": {
         "defaults": {
@@ -180,18 +181,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 60
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
             ]
           },
           "color": {
@@ -245,10 +237,7 @@
               {
                 "id": "custom.lineStyle",
                 "value": {
-                  "dash": [
-                    10,
-                    10
-                  ],
+                  "dash": [10, 10],
                   "fill": "dash"
                 }
               },
@@ -278,10 +267,7 @@
               {
                 "id": "custom.lineStyle",
                 "value": {
-                  "dash": [
-                    4,
-                    4
-                  ],
+                  "dash": [4, 4],
                   "fill": "dash"
                 }
               },
@@ -305,10 +291,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": ["lastNotNull", "max"]
         }
       },
       "targets": [
@@ -335,13 +318,13 @@
       ]
     },
     {
-      "title": "Session Utilization (current)",
+      "title": "Session Utilization",
       "type": "gauge",
       "gridPos": {
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 16
+        "y": 18
       },
       "fieldConfig": {
         "defaults": {
@@ -351,18 +334,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 60
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
             ]
           }
         },
@@ -370,27 +344,25 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         }
       },
       "targets": [
         {
-          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent)",
+          "expr": "max by (account, org_id) (claude_usage_session_utilization_percent{account=~\"$account\"})",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
       ]
     },
     {
-      "title": "Weekly Utilization (current)",
+      "title": "Weekly Utilization",
       "type": "gauge",
       "gridPos": {
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 16
+        "y": 18
       },
       "fieldConfig": {
         "defaults": {
@@ -400,18 +372,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 60
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 60 },
+              { "color": "red", "value": 80 }
             ]
           }
         },
@@ -419,14 +382,12 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         }
       },
       "targets": [
         {
-          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent)",
+          "expr": "max by (account, org_id) (claude_usage_weekly_utilization_percent{account=~\"$account\"})",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -440,7 +401,7 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 16
+        "y": 18
       },
       "fieldConfig": {
         "defaults": {
@@ -448,18 +409,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 600
-              },
-              {
-                "color": "green",
-                "value": 3600
-              }
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 600 },
+              { "color": "green", "value": 3600 }
             ]
           }
         },
@@ -467,9 +419,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "value",
         "graphMode": "none",
@@ -477,7 +427,7 @@
       },
       "targets": [
         {
-          "expr": "min by (account, org_id) (claude_usage_session_reset_seconds) - time()",
+          "expr": "min by (account, org_id) (claude_usage_session_reset_seconds{account=~\"$account\"}) - time()",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
@@ -491,7 +441,7 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 16
+        "y": 18
       },
       "fieldConfig": {
         "defaults": {
@@ -499,18 +449,9 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 3600
-              },
-              {
-                "color": "green",
-                "value": 86400
-              }
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 3600 },
+              { "color": "green", "value": 86400 }
             ]
           }
         },
@@ -518,9 +459,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "value",
         "graphMode": "none",
@@ -528,79 +467,87 @@
       },
       "targets": [
         {
-          "expr": "min by (account, org_id) (claude_usage_weekly_reset_seconds) - time()",
+          "expr": "min by (account, org_id) (claude_usage_weekly_reset_seconds{account=~\"$account\"}) - time()",
           "legendFormat": "{{account}}",
           "refId": "A"
         }
       ]
     },
     {
-      "title": "Poll Errors (5m)",
-      "type": "timeseries",
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 22
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
+      "type": "row",
+      "title": "Diagnostics",
+      "collapsed": true,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 24 },
+      "panels": [
+        {
+          "title": "Poll Errors (5m)",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 25
           },
-          "unit": "none"
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            }
+          },
+          "targets": [
+            {
+              "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total[5m]))",
+              "legendFormat": "{{account}}",
+              "refId": "A"
+            }
+          ]
         },
-        "overrides": []
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi"
-        },
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
         {
-          "expr": "sum by (account, org_id) (increase(claude_usage_poll_errors_total[5m]))",
-          "legendFormat": "{{account}}",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "title": "Poll Interval",
-      "type": "timeseries",
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 22
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "color": {
-            "mode": "palette-classic"
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "tooltip": {
-          "mode": "multi"
-        },
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
-      },
-      "targets": [
-        {
-          "expr": "max by (account, org_id) (claude_usage_poll_interval_seconds)",
-          "legendFormat": "{{account}}",
-          "refId": "A"
+          "title": "Poll Interval",
+          "type": "timeseries",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 25
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "palette-classic"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "tooltip": {
+              "mode": "multi"
+            },
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom"
+            }
+          },
+          "targets": [
+            {
+              "expr": "max by (account, org_id) (claude_usage_poll_interval_seconds)",
+              "legendFormat": "{{account}}",
+              "refId": "A"
+            }
+          ]
         }
       ]
     }
