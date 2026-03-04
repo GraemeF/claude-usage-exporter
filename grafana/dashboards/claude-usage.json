@@ -293,7 +293,7 @@
           "type": "timeseries",
           "gridPos": {
             "h": 8,
-            "w": 12,
+            "w": 14,
             "x": 0,
             "y": 10
           },
