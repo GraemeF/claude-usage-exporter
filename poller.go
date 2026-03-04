@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"log"
+	"math"
 	"sync"
 	"time"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 )
+
+const burnThreshold = 30 * time.Minute
 
 type pollerConfig struct {
 	ActiveInterval   time.Duration
@@ -26,14 +29,17 @@ type accountPoller struct {
 	interval       time.Duration
 	mu             sync.Mutex
 
+	recentErrors int // rolling error count for health penalty
+
 	// instruments
-	sessionUtil    metric.Float64Gauge
-	weeklyUtil     metric.Float64Gauge
-	sessionReset   metric.Float64Gauge
-	weeklyReset    metric.Float64Gauge
-	lastSuccess    metric.Float64Gauge
-	pollInterval   metric.Float64Gauge
-	pollErrors     metric.Int64Counter
+	sessionUtil      metric.Float64Gauge
+	weeklyUtil       metric.Float64Gauge
+	sessionReset     metric.Float64Gauge
+	weeklyReset      metric.Float64Gauge
+	lastSuccess      metric.Float64Gauge
+	pollInterval     metric.Float64Gauge
+	pollErrors       metric.Int64Counter
+	recommendScore   metric.Float64Gauge
 }
 
 func newAccountPoller(acc Account, cfg pollerConfig, meter metric.Meter) (*accountPoller, error) {
@@ -85,6 +91,12 @@ func newAccountPoller(acc Account, cfg pollerConfig, meter metric.Meter) (*accou
 		return nil, err
 	}
 
+	recommendScore, err := meter.Float64Gauge("claude.usage.recommendation.score",
+		metric.WithDescription("Account recommendation score: higher means prefer this account"))
+	if err != nil {
+		return nil, err
+	}
+
 	return &accountPoller{
 		acc:          acc,
 		cfg:          cfg,
@@ -94,8 +106,9 @@ func newAccountPoller(acc Account, cfg pollerConfig, meter metric.Meter) (*accou
 		sessionReset: sessionReset,
 		weeklyReset:  weeklyReset,
 		lastSuccess:  lastSuccess,
-		pollInterval: pollInterval,
-		pollErrors:   pollErrors,
+		pollInterval:   pollInterval,
+		pollErrors:     pollErrors,
+		recommendScore: recommendScore,
 	}, nil
 }
 
@@ -121,13 +134,18 @@ func (p *accountPoller) doPoll() {
 	if err != nil {
 		log.Printf("[%s] poll error: %v", p.acc.Name, err)
 		p.pollErrors.Add(ctx, 1, attrs)
+		p.mu.Lock()
+		p.recentErrors++
+		p.mu.Unlock()
 		return
 	}
 
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	p.recentErrors = 0
 
 	var sessionU, weeklyU float64
+	var timeToSessionReset, timeToWeeklyReset time.Duration
 	now := time.Now()
 	burstNeeded := false
 
@@ -136,7 +154,8 @@ func (p *accountPoller) doPoll() {
 		p.sessionUtil.Record(ctx, sessionU, attrs)
 		if t, err := time.Parse(time.RFC3339, w.ResetsAt); err == nil {
 			p.sessionReset.Record(ctx, float64(t.Unix()), attrs)
-			if d := t.Sub(now); d > 0 && d < p.cfg.ResetBurstWindow {
+			timeToSessionReset = t.Sub(now)
+			if d := timeToSessionReset; d > 0 && d < p.cfg.ResetBurstWindow {
 				burstNeeded = true
 			}
 		}
@@ -147,7 +166,8 @@ func (p *accountPoller) doPoll() {
 		p.weeklyUtil.Record(ctx, weeklyU, attrs)
 		if t, err := time.Parse(time.RFC3339, w.ResetsAt); err == nil {
 			p.weeklyReset.Record(ctx, float64(t.Unix()), attrs)
-			if d := t.Sub(now); d > 0 && d < p.cfg.ResetBurstWindow {
+			timeToWeeklyReset = t.Sub(now)
+			if d := timeToWeeklyReset; d > 0 && d < p.cfg.ResetBurstWindow {
 				burstNeeded = true
 			}
 		}
@@ -176,8 +196,51 @@ func (p *accountPoller) doPoll() {
 	}
 
 	p.pollInterval.Record(ctx, p.interval.Seconds(), attrs)
-	log.Printf("[%s] session=%.1f%% weekly=%.1f%% next=%s",
-		p.acc.Name, sessionU, weeklyU, p.interval)
+
+	// Recommendation score computation.
+	score := computeRecommendationScore(sessionU, weeklyU, timeToSessionReset, timeToWeeklyReset, p.recentErrors)
+	p.recommendScore.Record(ctx, score, attrs)
+
+	log.Printf("[%s] session=%.1f%% weekly=%.1f%% score=%.1f next=%s",
+		p.acc.Name, sessionU, weeklyU, score, p.interval)
+}
+
+// computeRecommendationScore returns a priority score for an account.
+// Higher score = prefer this account. Burn-phase accounts (near reset with
+// remaining headroom) get score > 1000 to ensure they're used before the
+// window resets. Exhausted accounts get -1.
+func computeRecommendationScore(sessionU, weeklyU float64, timeToSession, timeToWeekly time.Duration, recentErrors int) float64 {
+	sessionHeadroom := 100 - sessionU
+	weeklyHeadroom := 100 - weeklyU
+	effectiveHeadroom := math.Min(sessionHeadroom, weeklyHeadroom)
+
+	if effectiveHeadroom <= 0 {
+		return -1 // exhausted
+	}
+
+	var score float64
+
+	// Burn phase: account resets soon and still has headroom — prioritise burning it.
+	switch {
+	case timeToSession > 0 && timeToSession < burnThreshold && sessionHeadroom > 0:
+		score = 1000 + sessionHeadroom
+	case timeToWeekly > 0 && timeToWeekly < burnThreshold && weeklyHeadroom > 0:
+		score = 1000 + weeklyHeadroom
+	default:
+		score = effectiveHeadroom
+		// Freshness bonus: mild tie-breaker favouring accounts with more time until reset.
+		// Range 0–10 points. 18000s = 5 hours (session window).
+		if timeToSession > 0 {
+			score += math.Min(timeToSession.Seconds()/18000, 1.0) * 10
+		}
+	}
+
+	// Health penalty: halve score if recent poll errors.
+	if recentErrors > 0 {
+		score *= 0.5
+	}
+
+	return score
 }
 
 func clamp(v float64) float64 {
