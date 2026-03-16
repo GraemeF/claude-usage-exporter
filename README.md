@@ -4,6 +4,8 @@ Prometheus and OpenTelemetry exporter for Claude.ai session and weekly usage
 metrics. Polls the Claude.ai usage API for each configured account and exposes
 utilization percentages and reset timestamps as metrics.
 
+<img width="1944" height="1128" alt="image" src="https://github.com/user-attachments/assets/82e79332-9c52-4509-b7f1-336e501be3b1" />
+
 Inspired by [claude-multi-account-usage](https://github.com/erkantaylan/claude-multi-account-usage).
 
 ## How it works
