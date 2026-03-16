@@ -1,6 +1,45 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(115, 191, 105, 0.2)",
+        "name": "2\u00d7 Off-Peak (weekday evenings/nights)",
+        "type": "dashboard",
+        "target": {
+          "queryType": "timeRegions",
+          "fromDayOfWeek": 1,
+          "from": "14:00",
+          "toDayOfWeek": 5,
+          "to": "08:00",
+          "timezone": "America/New_York"
+        }
+      },
+      {
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": false,
+        "iconColor": "rgba(115, 191, 105, 0.2)",
+        "name": "2\u00d7 Off-Peak (weekends)",
+        "type": "dashboard",
+        "target": {
+          "queryType": "timeRegions",
+          "fromDayOfWeek": 6,
+          "from": "00:00",
+          "toDayOfWeek": 7,
+          "to": "23:59",
+          "timezone": "America/New_York"
+        }
+      }
+    ]
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
@@ -131,53 +170,6 @@
                 "value": 1
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "2\u00d7 Bonus (off-peak)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "rgba(115, 191, 105, 0.15)"
-                }
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 100
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 0
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "hidden"
-              },
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": true,
-                  "tooltip": true,
-                  "viz": false
-                }
-              },
-              {
-                "id": "unit",
-                "value": "none"
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "max",
-                "value": 1
-              }
-            ]
           }
         ]
       },
@@ -215,11 +207,6 @@
           "expr": "sum(clamp_min(clamp_max((1 - (claude_usage_weekly_reset_seconds - time()) / 604800) * 100, 100), 0) and claude_usage_weekly_reset_seconds > time())",
           "legendFormat": "Weekly (ideal)",
           "refId": "D"
-        },
-        {
-          "expr": "vector(1) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
-          "legendFormat": "2\u00d7 Bonus (off-peak)",
-          "refId": "E"
         }
       ]
     },
