@@ -160,6 +160,18 @@
                   "tooltip": true,
                   "viz": false
                 }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
               }
             ]
           }
@@ -201,7 +213,7 @@
           "refId": "D"
         },
         {
-          "expr": "vector(10000) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
+          "expr": "vector(100) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
           "legendFormat": "2\u00d7 Bonus (off-peak)",
           "refId": "E"
         }
@@ -484,6 +496,18 @@
                       "tooltip": true,
                       "viz": false
                     }
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "hidden"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 100
                   }
                 ]
               }
@@ -525,7 +549,7 @@
               "refId": "D"
             },
             {
-              "expr": "vector(10000) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
+              "expr": "vector(100) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
               "legendFormat": "2\u00d7 Bonus (off-peak)",
               "refId": "E"
             }
