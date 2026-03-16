@@ -142,24 +142,40 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "#73BF69"
+                  "fixedColor": "rgba(115, 191, 105, 0.15)"
                 }
               },
               {
                 "id": "custom.fillOpacity",
-                "value": 8
+                "value": 100
               },
               {
                 "id": "custom.lineWidth",
                 "value": 0
               },
               {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              },
+              {
                 "id": "custom.hideFrom",
                 "value": {
-                  "legend": false,
+                  "legend": true,
                   "tooltip": true,
                   "viz": false
                 }
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
               }
             ]
           }
@@ -201,7 +217,7 @@
           "refId": "D"
         },
         {
-          "expr": "vector(10000) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
+          "expr": "vector(1) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
           "legendFormat": "2\u00d7 Bonus (off-peak)",
           "refId": "E"
         }
@@ -466,24 +482,40 @@
                     "id": "color",
                     "value": {
                       "mode": "fixed",
-                      "fixedColor": "#73BF69"
+                      "fixedColor": "rgba(115, 191, 105, 0.15)"
                     }
                   },
                   {
                     "id": "custom.fillOpacity",
-                    "value": 8
+                    "value": 100
                   },
                   {
                     "id": "custom.lineWidth",
                     "value": 0
                   },
                   {
+                    "id": "custom.axisPlacement",
+                    "value": "hidden"
+                  },
+                  {
                     "id": "custom.hideFrom",
                     "value": {
-                      "legend": false,
+                      "legend": true,
                       "tooltip": true,
                       "viz": false
                     }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 1
                   }
                 ]
               }
@@ -525,7 +557,7 @@
               "refId": "D"
             },
             {
-              "expr": "vector(10000) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
+              "expr": "vector(1) and ((hour(vector(time())) < 12) or (hour(vector(time())) >= 18) or (day_of_week(vector(time())) == 0) or (day_of_week(vector(time())) == 6)) and (vector(time()) >= 1773360000) and (vector(time()) < 1774656000)",
               "legendFormat": "2\u00d7 Bonus (off-peak)",
               "refId": "E"
             }
