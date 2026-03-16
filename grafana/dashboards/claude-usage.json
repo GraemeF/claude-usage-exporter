@@ -160,6 +160,18 @@
                   "tooltip": true,
                   "viz": false
                 }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
               }
             ]
           }
@@ -484,6 +496,18 @@
                       "tooltip": true,
                       "viz": false
                     }
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "hidden"
+                  },
+                  {
+                    "id": "min",
+                    "value": 0
+                  },
+                  {
+                    "id": "max",
+                    "value": 100
                   }
                 ]
               }
